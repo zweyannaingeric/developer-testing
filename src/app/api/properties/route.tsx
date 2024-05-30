@@ -7,18 +7,22 @@ export async function POST(request: any) {
   try {
     const data = await request.json();
     console.log(data);
-    const { name, shortName, type, place, price, bedroom, description, img } =
+    const { name, shortName, type, placeId, price, bedroom, description, img } =
       data;
+
     const newProperty = await prisma.property.create({
       data: {
         name,
         shortName,
         type,
-        place,
+        placeId,
         price,
         bedroom,
         description,
         img,
+      },
+      include: {
+        place: true,
       },
     });
     return NextResponse.json(newProperty);
@@ -26,11 +30,26 @@ export async function POST(request: any) {
     console.log(err);
   }
 }
-export async function GET() {
+
+export const GET = async (request: Request) => {
   try {
-    const properties = await prisma.property.findMany();
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get('query');
+
+    let properties;
+    if (query) {
+      properties = await prisma.property.findMany({
+        where: {
+          name: { contains: query },
+        },
+      });
+    } else {
+      properties = await prisma.property.findMany();
+    }
+
     return NextResponse.json(properties);
   } catch (err) {
     console.log(err);
+    return NextResponse.json({ error: 'Failed to fetch properties' }, { status: 500 });
   }
-}
+};

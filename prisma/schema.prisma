@@ -13,14 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Area {
+  id Int @id @default(autoincrement())
+  name String @unique
+  properties Property[] @relation("AreaProperties")
+}
+
 model Property {
   id    Int     @id @default(autoincrement())
-  name  String?
-  shortName String?
-  type String?
-  place String?
+  name  String
+  shortName String
+  type     String       
+  place   Area?   @relation("AreaProperties", fields: [placeId], references: [name])
+  placeId String
   price Int
   bedroom Int
-  description String?
-  img String?
+  description String
+  img String
 }

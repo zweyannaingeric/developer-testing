@@ -1,6 +1,21 @@
-import React from "react";
+"use client";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 const Navbar = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams as any);
+    if (term) {
+      params.set("query", term);
+      console.log(term);
+    } else {
+      params.delete("query");
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
   return (
     <nav className="bg-white border border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-2.5 dark:bg-gray-800 shadow">
       <div className="container flex flex-wrap justify-between items-center mx-auto">
@@ -39,6 +54,8 @@ const Navbar = () => {
               className=" w-full border-none bg-transparent px-4 text-gray-400 outline-none focus:outline-none "
               type="search"
               name="search"
+              onChange={(e) => handleSearch(e.target.value)}
+              defaultValue={searchParams.get("query")?.toString()}
               placeholder="Search..."
             />
             <button type="submit" className="m-2 rounded px-4 py-2 text-black">

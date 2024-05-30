@@ -1,22 +1,22 @@
-"use client";
-import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Table from "./components/Table/Table";
+import { Suspense } from "react";
+import Spinner from "./components/Spinner";
 
-export default function Home() {
-  const [properties, setProperties] = useState([]);
-  useEffect(() => {
-    const fetchdata = async () => {
-      const res = await fetch("/api/properties");
-      const data = await res.json();
-      setProperties(data);
-    };
-    fetchdata();
-  }, []);
+const Home = async ({
+  searchParams,
+}: {
+  searchParams?: { query?: string };
+}) => {
+  const query = searchParams?.query || "";
   return (
-    <main className="">
-      <Navbar />
-      <Table />
-    </main>
+    <Suspense fallback={<Spinner />} key={query}>
+      <main className="">
+        <Navbar />
+        <Table query={query} />
+      </main>
+    </Suspense>
   );
-}
+};
+
+export default Home;
