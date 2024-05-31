@@ -1,22 +1,9 @@
-import Navbar from "./components/Navbar/Navbar";
-import Table from "./components/Table/Table";
-import { Suspense } from "react";
-import Spinner from "./components/Spinner";
+import Property from "./property/page";
 
-const Home = async ({
-  searchParams,
-}: {
-  searchParams?: { query?: string };
-}) => {
-  const query = searchParams?.query || "";
+export default function Home() {
   return (
-    <Suspense fallback={<Spinner />} key={query}>
-      <main className="">
-        <Navbar />
-        <Table query={query} />
-      </main>
-    </Suspense>
+    <main>
+      <Property />;
+    </main>
   );
-};
-
-export default Home;
+}
