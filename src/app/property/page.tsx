@@ -7,18 +7,28 @@ import List from "./list/page";
 const Property = () => {
   const [data, setData] = useState<any>([]);
   const [show, setShow] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/property/api");
+        const response = await fetch(
+          `/property/api?page=${page}&pageSize=${pageSize}`
+        );
         const newData = await response.json();
-        setData(newData);
+        if (response.ok) {
+          const data = newData;
+          setData(data);
+          console.log(data, "<==== DATA FETCED");
+        } else {
+          console.error("Failed to fetch properties:", response.statusText);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchData();
-  }, []);
+  }, [page, pageSize]);
 
   const handleMenu = () => {
     setShow((prevState) => !prevState);
@@ -46,9 +56,9 @@ const Property = () => {
             stroke="currentColor"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M4 6h16M4 12h16m-7 6h7"
             />
           </svg>

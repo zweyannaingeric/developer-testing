@@ -50,3 +50,14 @@ body {
 .max-h-select {
   max-height: 300px;
 }
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: white !important;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+  font-size: 25px !important;
+  font-weight: 900;
+}

@@ -68,20 +68,20 @@ const Filter = () => {
 
         {/* Room Type  */}
         <div className="ml-3 py-2">
-          <h5 className=" font-semibold text-sm">Bedrooms</h5>
-          <select
-            id="pricingType"
-            name="pricingType"
-            className="w-full h-8 border-2 text-xs focus:outline-none bg-gray-100 focus:border-gray-400 text-gray-700 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider mt-2"
-          >
-            {typeOptions.map((type) => (
-              <>
-                <option key={type.id} value={type.value}>
-                  {type.name}
-                </option>
-              </>
-            ))}
-          </select>
+          <h5 className=" font-semibold text-sm">Room Type</h5>
+          {typeOptions.map((option) => (
+            <div key={option.id}>
+              <label className="flex bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3 text-xs  font-semibold hover:bg-gray-200 cursor-pointer ">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  name={option.name}
+                  value={option.value}
+                />
+                {option.name}
+              </label>
+            </div>
+          ))}
         </div>
 
         {/* Price Range  */}
@@ -116,7 +116,7 @@ const Filter = () => {
           <select
             id="pricingType"
             name="pricingType"
-            className="w-full h-8 border-2 text-xs focus:outline-none bg-gray-100 focus:border-gray-400 text-gray-700 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider mt-2"
+            className="w-full  border-2 text-xs focus:outline-none bg-gray-100 focus:border-gray-400 text-gray-700 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider mt-2"
           >
             {roomCountOptions.map((roomCount) => (
               <>

@@ -1,0 +1,27 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Area {
+  id           Int        @id @default(autoincrement())
+  districtName String
+  properties   Property[]
+}
+
+model Property {
+  id          Int      @id @default(autoincrement())
+  projectName String
+  shortTitle  String
+  price       Int
+  bedrooms    Int
+  description String
+  img         String[]
+  roomType    String
+  areaId      Int
+  area        Area     @relation(fields: [areaId], references: [id])
+}
