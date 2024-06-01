@@ -19,7 +19,6 @@ const Property = () => {
         if (response.ok) {
           const data = newData;
           setData(data);
-          console.log(data, "<==== DATA FETCED");
         } else {
           console.error("Failed to fetch properties:", response.statusText);
         }
