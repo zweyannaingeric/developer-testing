@@ -9,14 +9,8 @@ const prisma = new PrismaClient();
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === "GET") {
-      const { page = 1, pageSize = 10 } = req.query || {}; // Destructure query parameters with default values
-
-      const skip = (Number(page) - 1) * Number(pageSize);
-      const take = Number(pageSize);
-
+  
       const properties = await prisma.property.findMany({
-        skip,
-        take,
       });
 
       return NextResponse.json(properties);

@@ -7,13 +7,11 @@ import List from "./list/page";
 const Property = () => {
   const [data, setData] = useState<any>([]);
   const [show, setShow] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch(
-          `/property/api?page=${page}&pageSize=${pageSize}`
+          `/property/api?page`
         );
         const newData = await response.json();
         if (response.ok) {
@@ -27,7 +25,7 @@ const Property = () => {
       }
     }
     fetchData();
-  }, [page, pageSize]);
+  }, []);
 
   const handleMenu = () => {
     setShow((prevState) => !prevState);
