@@ -1,5 +1,8 @@
+// generateAreaData.js
 import { faker } from "@faker-js/faker";
-const districts = [
+import fs from "fs";
+
+const districtNames = [
   "Watthana",
   "Phasi Charoen",
   "Bang Rak",
@@ -32,14 +35,8 @@ const districts = [
   "Thung Khru",
 ];
 
-for (let i = 0; i < 10000; i++) {
-  districts.push({
-    id: i,
-    area: faker.helpers.arrayElement(districts),
-  });
-}
+const districts = districtNames.map((name, index) => ({
+  district: name
+}));
 
-import fs from "fs";
-fs.writeFileSync("districts.json", JSON.stringify(districts, null, 2));
-
-console.log("Generated 100 fake properties and saved to properties.json");
+fs.writeFileSync("area.ts", JSON.stringify(districts, null, 2));

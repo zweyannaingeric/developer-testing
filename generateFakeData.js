@@ -34,15 +34,14 @@ const districts = [
   "Thung Khru",
 ];
 
-for (let i = 0; i < 10000; i++) {
+for (let i = 0; i < 1000; i++) {
   properties.push({
-    id: i,
-    projectName: faker.company.catchPhrase(),
-    shortTitle: faker.lorem.words(3),
+    name: faker.company.catchPhrase(),
+    shortName: faker.lorem.words(3),
     price: Math.floor(Math.random() * 1000000) + 100000,
     bedrooms: Math.floor(Math.random() * 5) + 1,
-    area: faker.helpers.arrayElement(districts),
     description: faker.lorem.paragraph(3),
+    areaId : Math.floor(Math.random() * 30) + 1 ,
     img: [
       faker.image.image(),
       faker.image.image(),
@@ -50,11 +49,11 @@ for (let i = 0; i < 10000; i++) {
       faker.image.image(),
       faker.image.image(),
     ],
-    roomType: faker.helpers.arrayElement(["sale", "rent"]),
+    roomType: faker.helpers.arrayElement(["SALE", "RENT"]),
   });
 }
 
 import fs from "fs";
-fs.writeFileSync("properties.json", JSON.stringify(properties, null, 2));
+fs.writeFileSync("property.ts", JSON.stringify(properties, null, 2));
 
 console.log("Generated 100 fake properties and saved to properties.json");

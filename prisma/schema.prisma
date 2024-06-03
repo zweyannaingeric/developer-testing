@@ -8,20 +8,25 @@ generator client {
 }
 
 model Area {
-  id           Int        @id @default(autoincrement())
-  districtName String
-  properties   Property[]
+  id       Int       @id @default(autoincrement())
+  district String
+  properties Property[]
 }
 
 model Property {
   id          Int      @id @default(autoincrement())
-  projectName String
-  shortTitle  String
-  price       Int
-  bedrooms    Int
+  name        String
+  shortName   String
   description String
-  img         String[]
-  roomType    String
+  price       Int
+  img         Json
+  bedrooms    Int
+  roomType    RoomType
   areaId      Int
   area        Area     @relation(fields: [areaId], references: [id])
+}
+
+enum RoomType {
+  SALE
+  RENT
 }
