@@ -57,14 +57,31 @@ const typeDefs = gql`
       after: String
       roomType: RoomType
       district: String
+      priceMin: Int
+      priceMax: Int
+      bedrooms: Int
     ): PropertyConnection
   }
 `;
 
-const getProperties = async ({ first, after, roomType, district }) => {
+const getProperties = async ({
+  first,
+  after,
+  roomType,
+  district,
+  priceMin,
+  priceMax,
+  bedrooms,
+}) => {
   const where = {
     ...(roomType && { roomType }),
     ...(district && { area: { district } }),
+    ...(priceMin !== undefined &&
+      priceMin !== null && { price: { gte: priceMin } }),
+    ...(priceMax !== undefined &&
+      priceMax !== null && { price: { lte: priceMax } }),
+    ...(bedrooms !== undefined &&
+      bedrooms !== null && { bedrooms: { gte: bedrooms } }),
   };
 
   const properties = await prisma.property.findMany({
@@ -76,15 +93,27 @@ const getProperties = async ({ first, after, roomType, district }) => {
 
   return properties.map((property) => ({
     ...property,
-    img: JSON.parse(property.img || "[]"), // Ensure img is parsed as an array
+    img: JSON.parse(property.img || "[]"), 
     cursor: property.id.toString(),
   }));
 };
 
-const getTotalPropertiesCount = async ({ roomType, district }) => {
+const getTotalPropertiesCount = async ({
+  roomType,
+  district,
+  priceMin,
+  priceMax,
+  bedrooms,
+}) => {
   const where = {
     ...(roomType && { roomType }),
     ...(district && { area: { district } }),
+    ...(priceMin !== undefined &&
+      priceMin !== null && { price: { gte: priceMin } }),
+    ...(priceMax !== undefined &&
+      priceMax !== null && { price: { lte: priceMax } }),
+    ...(bedrooms !== undefined &&
+      bedrooms !== null && { bedrooms: { gte: bedrooms } }),
   };
 
   const count = await prisma.property.count({ where });
@@ -94,8 +123,16 @@ const getTotalPropertiesCount = async ({ roomType, district }) => {
 const resolvers = {
   Query: {
     properties: async (_, { first, after, roomType, district }) => {
-      const properties = await getProperties({ first, after, roomType, district });
-      const totalProperties = await getTotalPropertiesCount({ roomType, district });
+      const properties = await getProperties({
+        first,
+        after,
+        roomType,
+        district,
+      });
+      const totalProperties = await getTotalPropertiesCount({
+        roomType,
+        district,
+      });
 
       return {
         edges: properties.map((property) => ({
@@ -109,8 +146,12 @@ const resolvers = {
         totalProperties,
       };
     },
+    areas: async () => {
+      return await prisma.area.findMany();
+    },
   },
 };
+
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,

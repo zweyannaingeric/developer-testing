@@ -15,12 +15,18 @@ const GET_PROPERTIES = gql`
     $after: String
     $roomType: RoomType
     $district: String
+    $priceMin: Int
+    $priceMax: Int
+    $bedrooms: Int
   ) {
     properties(
       first: $first
       after: $after
       roomType: $roomType
       district: $district
+      priceMin: $priceMin
+      priceMax: $priceMax
+      bedrooms: $bedrooms
     ) {
       edges {
         cursor
@@ -47,15 +53,41 @@ const GET_PROPERTIES = gql`
   }
 `;
 
+const GET_AREAS = gql`
+  query GetAreas {
+    areas {
+      id
+      district
+    }
+  }
+`;
+
 function Home() {
   const [pageInfo, setPageInfo] = useState({
     endCursor: null,
     hasNextPage: true,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, error, data, fetchMore } = useQuery(GET_PROPERTIES, {
-    variables: { first: 10, after: null },
+  const [filters, setFilters] = useState({
+    roomType: null,
+    district: null,
+    priceMin: null,
+    priceMax: null,
+    bedrooms: null,
   });
+
+  const { loading, error, data, fetchMore, refetch } = useQuery(
+    GET_PROPERTIES,
+    {
+      variables: { first: 10, after: null, ...filters },
+    }
+  );
+
+  const {
+    loading: loadingAreas,
+    error: errorAreas,
+    data: areasData,
+  } = useQuery(GET_AREAS);
 
   const handlePageChange = (pageNumber) => {
     const after = pageNumber > 1 ? data.properties.pageInfo.endCursor : null;
@@ -73,6 +105,11 @@ function Home() {
     });
   };
 
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    refetch({ first: 10, after: null, ...newFilters });
+  };
+
   const [show, setShow] = useState(false);
 
   const handleMenu = () => {
@@ -87,7 +124,7 @@ function Home() {
     <>
       <div className=" grid  grid-cols-12 gap-10 p-5">
         <div className="col-span-12 sm:col-span-3 hidden md:block ">
-          <Filter />
+          <Filter areas={areasData.areas} onFilterChange={handleFilterChange} />
         </div>
 
         <div className="flex items-center md:hidden">
@@ -117,7 +154,10 @@ function Home() {
 
         {show ? (
           <div className="col-span-12 sm:col-span-4">
-            <Filter />
+            <Filter
+              areas={areasData.areas}
+              onFilterChange={handleFilterChange}
+            />
           </div>
         ) : (
           ""
